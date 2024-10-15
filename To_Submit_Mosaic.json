@@ -1,0 +1,135 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
+  "data": {
+    "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/mosaic_new_Data.csv"
+  },
+  "vconcat": [
+    {
+      "mark": {
+        "type": "text",
+        "baseline": "middle",
+        "align": "center",
+        "fontSize": 20
+      },
+      "encoding": {
+        "x": {
+          "aggregate": "min",
+          "field": "xc",
+          "title": "Sector",
+          "axis": {
+            "orient": "top",
+            "labelFontSize": 20,
+            "titleFontSize": 21            }
+        }
+      }  
+    },
+    {
+      "layer": [
+        {
+          "mark": {
+            "type": "rect"
+          },
+          "encoding": {
+            "x": {
+              "field": "nx",
+              "type": "quantitative",
+              "axis": null
+            },
+            "x2": {"field": "nx2"},
+            "y": {
+              "field": "ny",
+              "type": "quantitative"
+            },
+            "y2": {"field": "ny2"},
+            "color": {
+              "field": "Sector",
+              "type": "nominal"              ,
+              "scale": {
+                  "domain": [
+                    "Agriculture",
+                    "Mining and quarrying",
+                    "Manufacturing",
+                    "Construction",
+                    "Services"
+                  ],
+                  "range": ["#1abc9c", "#00bcd4", "#3f51b5", "#9b59b6", "#3498db"]
+                },
+                "legend": null
+    
+  },
+            "opacity": {
+              "field": "Gender",
+              "type": "nominal" ,
+
+                "legend": null         
+          },
+
+
+            "tooltip": [
+              {
+                "field": "Sector",
+                "type": "nominal"
+              },
+              {
+                "field": "Gender" , 
+                "type": "nominal"
+              },
+              {
+                "field": "sum_*",
+                "type": "quantitative",
+                "title": "Number of Employed Labourers"
+              }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "baseline": "middle",
+            "fontSize": 20
+          },
+          "encoding": {
+            "x": {
+              "field": "xc",
+              "type": "quantitative",
+              "axis": null
+            },
+            "y": {
+              "field": "yc",
+              "type": "quantitative",
+              "axis": {
+                "title": "Gender",
+                "labelFontSize": 20,
+                "titleFontSize": 21
+                  }
+            },
+            "text": {
+              "field": "Gender",
+              "type": "nominal"              }
+          }
+        }
+      ],
+      "width": 600, 
+      "height": 500  
+
+    }
+  ],
+  "resolve": {
+    "scale": {
+      "x": "shared"
+    }
+  },
+  "config": {
+    "view": {
+      "stroke": ""
+    },
+    "concat": {"spacing": 10},
+    "axis": {
+      "domain": false,
+      "ticks": false,
+      "labels": false,
+      "grid": false
+    }
+  }
+}

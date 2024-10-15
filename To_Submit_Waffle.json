@@ -1,0 +1,166 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": 450,
+    "height": 450,
+    "data": {"url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/waffle.csv"},
+    "params": [
+        {
+          "name": "Year_selection",
+          "value": 2023,
+          "bind": {
+            "input": "range",
+            "min": 2017,
+            "max": 2023,
+            "step": 1,
+            "name": "Year: "
+          }
+        }
+    
+    ],
+    "transform": [
+        {"filter": "datum.Year == Year_selection"},
+
+
+      {
+        "aggregate": [{"op": "min", "field": "PercentOfTotal", "as": "P"}],
+        "groupby": ["Origin"]
+      },
+      {"calculate": "sequence(1,(datum.P+1)/10)", "as": "S"},
+      {"flatten": ["S"]},
+      {
+        "window": [{"op": "row_number", "as": "id"}]      },
+      {"calculate": "ceil (datum.id / 10)", "as": "row"},
+      {"calculate": "datum.id - datum.row * 10", "as": "col"},
+      {
+        "window": [{"op": "rank", "as": "rank"}],
+        "groupby": ["Origin"]
+      },
+      {"calculate": "abs(datum.P/2-datum.S)", "as": "Calc"},
+      {
+        "window": [{"op": "dense_rank", "field": "Calc", "as": "newrank"}],
+        "groupby": ["Origin"],
+        "sort": [
+          {
+            "field": "Calc",
+            "order": "ascending"
+          },
+          {
+            "field": "id", 
+            "order": "descending"
+          }
+      
+        ]      
+      },
+      {
+        "calculate": "round(datum.P) + '' + '%'", 
+        "as": "Percentage of Total"
+      }
+  
+    ],
+    "layer": [{
+    "params": [
+        {
+          "name": "highlight", 
+          "select": {"type": "point", "on": "mouseover"}, 
+          "bind": "legend"
+        }
+    ],
+    "mark": {
+      "type": "circle",
+      "filled": true,
+      "tooltip": true,
+      "stroke": "black",
+      "strokeWidth": 0.7
+    },
+    "encoding": {
+      "x": {"field": "col", "type": "ordinal", "axis": null},
+      "y": {"field": "row", "type": "ordinal", "axis": null, "sort": "-y"},
+      
+      "color": {
+        
+        "field": "Origin",
+        "type": "nominal",
+        "scale": {
+            "domain": [
+              "Less than 3 months",
+              "3 to 6 months",
+              "6 months to 1 year",
+              "More than 1 year"
+            ],
+            "range": ["#FFE5B4", "#ffa377", "#ff4b2b", "#a50e00"]
+          },
+          "legend": null,
+          "condition": {
+            "param": "highlight",
+            "empty": false,
+            "field": "Origin",
+            "type": "nominal"
+          }
+        },
+        "opacity": {
+          "condition": {"param": "highlight", "value": 1},
+          "value": 0.1
+        },
+          "size": {"value": 1500},
+      "tooltip": [{"field": "Origin", "type": "nominal", "title":"Duration of Unemployment"},
+    {"field": "Percentage of Total", "type": "nominal"}]
+    }
+
+  },
+  {
+    "mark": {
+      "type": "text",
+      "align": "center",
+      "baseline": "middle",
+      "dy": -2,
+      "fontSize": 42,
+      "fontWeight": "bold",
+      "color": "black",
+      "stroke": "white",  
+      "strokeWidth": 8    
+    },
+    "transform": [
+      { "filter": "datum.newrank == 1" },
+      {
+        "calculate": "round(datum.P) + '' + '%'", 
+        "as": "Perce"
+      }
+    ],
+    "encoding": {
+      "x": { "field": "col", "type": "ordinal" },
+      "y": { "field": "row", "type": "ordinal", "sort": "-y" },
+      "text": { "field": "Perce", "type": "nominal" }
+    }
+  },
+  {
+    "mark": {
+      "type": "text",
+      "align": "center",
+      "baseline": "middle",
+      "dy": -1,  
+      "fontSize": 40,
+      "fontWeight": "bold",
+      "color": "black",  
+      "opacity": 0.9    
+    },
+    "transform": [
+      { "filter": "datum.newrank == 1" },
+      {
+        "calculate": "round(datum.P) + '' + '%'", 
+        "as": "Perce"
+      }
+    ],
+    "encoding": {
+      "x": { "field": "col", "type": "ordinal" },
+      "y": { "field": "row", "type": "ordinal", "sort": "-y" },
+      "text": { "field": "Perce", "type": "nominal" }
+    }
+  }
+
+
+],
+
+"config": {
+  "view": {"stroke": null}
+}
+}

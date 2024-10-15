@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labour Force in Malaysia - Visualization Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+    <style>
+            input[type="range"] {
+      font-size: 20px;
+      width: 180px;
+    }
+    select {
+      font-size: 20px;
+      padding: 1px;
+    }
+    
+    label {
+      font-size: 20px;
+
+      font-weight: bold;
+    }
+
+    .four-section-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1.5fr 1fr;
+        gap: 20px;
+    }
+
+    .left-section, .right-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 0px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.001);
+        background-color: #f8fafc; 
+    }
+
+
+
+
+    .middle-section {
+        grid-column: span 2;
+        padding: 0 20px;
+        font-size: 1.3rem;
+        color: #6c757d;
+        line-height: 1.6;
+    }
+
+    .design-element {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .legend-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+    .legend-container-4 {
+    display: grid;
+    flex-wrap: wrap;
+    gap: 0px 20px; /* Adjust spacing between items */
+    grid-template-columns: repeat(3, auto); /* 3 items in the first row */
+    margin-left: 0; /* Aligns it to the bottom left */
+
+}
+        .legend-container-2 {
+    display: grid;
+    flex-wrap: wrap;
+    gap: 0px 20px; /* Adjust spacing between items */
+    grid-template-columns: repeat(3, auto); /* 3 items in the first row */
+    margin-top: 20px;
+    margin-left: 0; /* Aligns it to the bottom left */
+}
+.legend-container-3 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Ensures 2 items per row with flexible width */
+    gap: 0px 20px; /* Adjust spacing between items */
+    margin-top: 20px;
+    margin-left: 0;
+    max-width: 100%; /* Ensures the legend container doesn't exceed the parent container's width */
+    box-sizing: border-box; /* Ensures padding and border are included in the total width */
+}
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 5px;
+            margin-bottom: 5px;
+
+        }
+
+        .legend-item-2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+
+        /* First legend color set */
+        .disabled-color {
+            background-color: #33A2D8;
+        }
+
+        .family-color {
+            background-color: #61AF17;
+        }
+
+        .studies-color {
+            background-color: #924444;
+        }
+
+        .not-interested-color {
+            background-color: #fd8b17;
+        }
+
+        .retired-color {
+            background-color: #7B4596;
+        }
+
+        .school-color {
+            background-color: #B3A431;
+        }
+
+        /* Second legend color set  "#ff723e", "#ff9974"       "range": ["#1abc9c", "#00bcd4", "#3f51b5", "#9b59b6", "#3498db"]
+ */ 
+
+  
+        .maless-color {
+            background-color: #ff723e;
+        }
+
+        .female-color {
+            background-color: #ff9974;
+        }
+
+        .agriculture-color {
+            background-color: #1abc9c;
+        }
+
+        .mining-color {
+            background-color: #00bcd4;
+        }
+
+        .manufacturing-color {
+            background-color: #3f51b5;
+        }
+
+        .construction-color {
+            background-color: #9b59b6;
+        }
+
+        .services-color {
+            background-color: #3498db;
+        }
+
+
+
+        /* Colors for the legend               "range": ["#FFE5B4", "#ffa377", "#ff4b2b", "#a50e00"]
+           "range": ["#FFdddd", "#FF9999", "#ff0404", "#ab0000"]
+ */
+
+ .less-than-three-color {
+            background-color: #FFE5B4;
+        }
+
+        .three-to-six-color {
+            background-color: #ffa377;
+        }
+
+        .six-to-one-year-color {
+            background-color: #ff4b2b;
+        }
+
+
+        .more-than-one-year-color {
+            background-color: #a50e00;
+        }
+
+
+
+.family-duty-color {
+    background-color: #61AF17;
+}
+
+.further-study-color {
+    background-color: #924444;
+}
+
+.no-interest-color {
+    background-color: #fd8b17;
+}
+
+.retired-color {
+    background-color: #7B4596;
+}
+
+.school-color {
+    background-color: #B3A431;
+}
+
+.disabled-male-color {
+    background-color: #74B7D8;
+}
+
+.disabled-female-color {
+    background-color: #a6cee3;
+}
+
+.family-duty-male-color {
+    background-color: #9BE05D;
+}
+
+.family-duty-female-color {
+    background-color: #b2df8a;
+}
+
+.further-study-male-color {
+    background-color: #a94c4c;
+}
+
+.further-study-female-color {
+    background-color: #c17171;
+}
+
+.no-interest-male-color {
+    background-color: #ffa242;
+}
+
+.no-interest-female-color {
+    background-color: #ffc367;
+}
+
+.retired-male-color {
+    background-color: #A97DBF;
+}
+
+.retired-female-color {
+    background-color: #cab2d6;
+}
+
+.school-male-color {
+    background-color: #E4D359;
+}
+
+.school-female-color {
+    background-color: #E8DC86;
+}
+
+
+
+
+        .legend-text {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 18px;
+            color: #4a5056;
+            
+            
+        }
+
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            display: block;
+            background-color: #f0f2f5;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .page-wrapper {
+            width: 1500px;
+            background-color: #fff;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            font-family: 'Merriweather', serif;
+            font-size: 4.5rem;
+            padding: 30px;
+            background-color: #1d3557;
+            color: #f1faee;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .section-heading {
+            font-family: 'Merriweather', serif;
+            font-size: 3.5rem;
+            color: #1d3557;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #457b9d;
+            text-align: center;
+        }
+
+        .chart-and-legend-container-2 {
+            justify-content: center;
+            padding-left: 100px;
+        }
+
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+            transform: translateZ(0); 
+        }
+
+        .chart-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .split-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.75rem;
+            color: #457b9d;
+            margin-bottom: 15px;
+            text-align: center; /* Proper syntax for centering text */
+        }
+
+        p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.4rem;
+            color: #4a5056;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .chart {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .chart-5 {
+            width: 100%;
+            margin-bottom: 10px;
+            justify-content: center;
+            padding-left: 115px;
+
+
+        }
+
+
+        .side-by-side-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .side-by-side-container .chart-container {
+            width: 45%;
+        }
+
+        .split-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 20px 0;
+            background-color: #ffffff;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+            transform: translateZ(0);
+
+
+        }
+
+        .split-container .split-title {
+            text-align: left;
+            font-family: 'Merriweather', serif;
+            font-size: 2.75rem;
+            color: #457b9d;
+            margin-bottom: 30px;
+            text-align: center; /* Proper syntax for centering text */
+
+            
+        }
+
+        .split-container .content-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .content-container .chart {
+            width: 70%;
+        }
+
+        .content-container .text-container {
+            width: 48%;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .annotation-text {
+            font-family: 'Open Sans', sans-serif;
+
+    font-size: 16.5px;
+    color: #4a5056;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    white-space: normal; /* Allow text to wrap normally */
+    word-wrap: break-word; /* Force long words to break */
+    max-width: 200px; /* Adjust this value to control the character width */
+}
+
+.annotation-text-2 {
+
+    font-family: 'Open Sans', sans-serif;
+
+font-size: 16.5px;
+color: #4a5056;
+background-color: rgba(255, 255, 255, 0.8);
+padding: 5px;
+border-radius: 4px;
+border: 1px solid #ccc;
+white-space: normal; /* Allow text to wrap normally */
+word-wrap: break-word; /* Force long words to break */
+max-width: 300%; /* Adjust this value to control the character width */
+}
+
+.annotation-text-3 {
+
+    font-family: 'Open Sans', sans-serif;
+
+font-size: 16.5px;
+color: #4a5056;
+background-color: rgba(255, 255, 255, 0.8);
+padding: 5px;
+border-radius: 4px;
+border: 1px solid #ccc;
+white-space: normal; /* Allow text to wrap normally */
+word-wrap: break-word; /* Force long words to break */
+max-width: 179px; /* Adjust this value to control the character width */
+}
+
+
+.subinfo-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 19px; /* Slightly smaller font size */
+    padding: 5px;
+
+
+    border-radius: 3px;
+    margin-bottom: 10px; /* Space between this and other elements */
+    max-width: 220px; /* Adjust the width as needed */
+    font-weight: bold; /* Emphasize the text */
+    white-space: normal; /* Allow text to wrap */
+}
+
+
+
+
+
+
+.color-box {
+    width: 20px; /* Fixed width for the square */
+    height: 20px; /* Fixed height for the square */
+    background-color: #ccc; /* Default color */
+    margin-right: 10px; /* Space between the square and the text */
+}
+
+
+
+
+.legend-container-x {
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+    margin: 20px;
+    text-align: center; /* Center the heading */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all items horizontally */
+    
+}
+
+.legend-container-x h2 {
+    font-family: 'Open Sans', sans-serif;
+
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.legend-item-x {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center text and circle horizontally */
+    margin-bottom: 10px;
+}
+
+
+.legend-item-y {
+    display: flex;
+    align-items: center; /* Keep this for vertical centering */
+    justify-content: flex-start; /* Add this to ensure left alignment */
+    margin-bottom: 10px; /* Space between legend items */
+}
+
+.circle-x {
+    background-color: gray;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.legend-item-x {
+    font-size: 1rem;
+}
+
+.legend-group {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+}
+
+.legend-group h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+
+
+
+
+.note-container {
+    background-color: #f9f9f9; /* Light background for the note */
+    border-left: 5px solid #007a92; /* Highlighting border color */
+    padding: 10px 15px;
+    margin: 20px 0;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 5px;
+    border-right: 5px solid #007a92; /* Highlighting border color */
+
+}
+
+.note-text {
+    font-family: 'Open Sans', sans-serif;
+
+    color: #333; /* Text color */
+    font-size: 1rem; /* Font size for readability */
+    margin: 0;
+    font-style: italic; /* Italicize the text to make it stand out */
+}
+
+
+a {
+    font-family: 'Open Sans', sans-serif;
+
+            font-size: 16px;      /* Set font size for links */
+            color: #f1faee;       /* Link color */
+            text-decoration: underline; /* Underline links */
+        }
+
+    
+
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <header>
+            Labour Force in Malaysia
+        </header>
+
+        
+
+        <!-- Labour Force Overview Section -->
+
+        <!-- Rural states like Perlis and Labuan show much smaller working-age populations compared to urban centers -->
+        
+            <div class="chart-container">
+                <h2>Working-Age Population Breakdown by State</h2>
+                
+                <div id="chart1" class="chart"></div>
+
+                <div class="annotation" style="position: absolute; top: 410px; left: 500px;">
+                    <div class="subinfo-text"><b>Workforce Breakdown</b></div>
+                </div>
+
+                <div class="annotation" style="position: absolute; top: 475px; left: 5px;">
+                    <div class="annotation-text-3">Percentage of employment is dominated by Selangor</div>
+                </div>
+            
+                <div class="annotation" style="position: absolute; top: 400px; left: 1100px;">
+                    <div class="annotation-text">High employment in Sabah and Sarawak, with a notable percentage outside the workforce</div>
+                </div>
+            
+                <div class="four-section-layout">
+                    <div class="left-section">
+                        <!-- Blank section, no design element -->
+
+                        <div class="legend-container-x">
+                            <div class="legend-container-x">
+                                <h2>Working Population</h2>
+                                <div class="legend-item-y">
+                                    <div class="color-box" style="background-color: #002e37;"></div>
+                                    <span class="legend-text">Employed</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="color-box" style="background-color: #004b5a;"></div>
+                                    <span class="legend-text">Outside Labour</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="color-box" style="background-color: #007a92;"></div>
+                                    <span class="legend-text">Unemployed</span>
+                                </div>
+                            </div>
+                        </div>
+                    
+
+
+                    </div>
+                    
+                    <!-- Middle continuous section (two parts combined) -->
+                    <div class="middle-section">
+                        <div class="note-container">
+                            <p class="note-text">
+                                Click on each state to view the working population breakdown on the donut chart (default: All States). Use the slider to change the year and see how the data evolves.
+                            </p>
+                        </div>
+                        
+                        <p>
+                            From 2019 to 2023, <b>Selangor</b>, <b>Sabah</b>, and <b>Sarawak</b> had the largest <i>working-age populations</i>, with <b>Selangor</b> leading in <i>employment</i>, reaching <b>3.8 million</b>. Smaller states like <b>Perlis</b> and <b>Labuan</b> had lower employment.
+                            <i>Unemployment</i> remained stable, though <b>Sabah</b> saw peaks during the <i>COVID-19 pandemic</i>, with <b>165,600</b> unemployed in 2022.
+]
+                            A significant number remained <i>outside the labour force</i>, especially in <b>Selangor</b> and <b>Sabah</b>, with over <b>1.2 million</b> and <b>900,000</b>, respectively.
+                        </p>
+
+                        <p>Next, we'll break down the population by employment, unemployment, and those outside the labour force to better understand their distribution.</p>
+
+                    </div>
+                    
+                    
+                                                                                                    <div class="right-section">
+                        <!-- Blank section, no design element -->
+
+                        <div class="legend-container-x">
+
+                                <div class="legend-container-x">
+                            <h2>Percentage(%)</h2>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #f9fbff;"></div>
+                                <span class="legend-text">10-20%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #deebf7;"></div>
+                                <span class="legend-text">20-30%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #c6dbef;"></div>
+                                <span class="legend-text">30-40%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #9ecae1;"></div>
+                                <span class="legend-text">40-50%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #6baed6;"></div>
+                                <span class="legend-text">50-60%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #4292c6;"></div>
+                                <span class="legend-text">60-70%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #2171b5;"></div>
+                                <span class="legend-text">70-80%</span>
+                            </div>
+                            <div class="legend-item-y">
+                                <div class="color-box" style="background-color: #08519c;"></div>
+                                <span class="legend-text">80+%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    </div>
+                    
+                    </div>
+            </div>
+            
+        
+        
+        
+
+        <!-- Employment Section -->
+        <div class="section-heading">Employment</div>
+
+
+                    <div class="chart-container">
+                        <h2>Employment Growth and Trends by Industry and Gender</h2>
+                        <div id="chart2" class="chart"></div>
+
+                        
+
+                <div class="annotation" style="position: absolute; bottom: 610px; right: 300px;">
+                    <div class="annotation-text">Services has the largest labour force size consistently</div>
+                </div>
+                <div class="annotation" style="position: absolute; top: 350px; left: 400px;">
+                    <div class="annotation-text">Manufacturing shows high productivity for lesser hours worked consistently</div>
+                </div>
+
+                    
+                        <div class="four-section-layout">
+                            <div class="left-section">
+                                <!-- Blank section, no design element Male workforce dominates, but female participation is steadily increasing,   -->
+                                <div class="legend-container-x">
+                                    <h2>Sectors</h2>
+
+                                    <div class="legend-item-y">
+                                        <div class="legend-color agriculture-color"></div>
+                                        <span class="legend-text">Agriculture</span>
+                                    </div>
+                                    <div class="legend-item-y">
+                                        <div class="legend-color mining-color"></div>
+                                        <span class="legend-text">Mining and quarrying</span>
+                                    </div>
+                                    <div class="legend-item-y">
+                                        <div class="legend-color manufacturing-color"></div>
+                                        <span class="legend-text">Manufacturing</span>
+                                    </div>
+                                    <div class="legend-item-y">
+                                        <div class="legend-color construction-color"></div>
+                                        <span class="legend-text">Construction</span>
+                                    </div>
+                                    <div class="legend-item-y">
+                                        <div class="legend-color services-color"></div>
+                                        <span class="legend-text">Services</span>
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+                            
+                            <!-- Middle continuous section (two parts combined) -->
+                            <div class="middle-section">
+                                <div class="note-container">
+                                    <p class="note-text">
+                                        Use the year slider to filter data by year. Click on the bars to explore industries within each sector. Use the brush on the bubble plot to zoom in on the bar chart for more details.
+
+                                        </p>
+                                </div>
+                                <p>The chart shows that <b>Services</b> and <b>Manufacturing</b> lead in labor force size and total hours worked, with <b>Services</b> dominating overall. Productivity is highest in Manufacturing and Services sectors, while <i>Agriculture</i> shows moderate productivity. Both labor force and productivity have steadily increased over time.</p>
+
+                                <p>With this in mind, let's now examine the gender breakdown within each industry to understand the composition of the workforce.</p>
+                                                            </div>
+                                                                                                                                    
+                            <div class="right-section">
+                                <!-- Blank section, no design element -->
+                                <div class="legend-container-x">
+                                    <h2>Labour Size</h2>
+                                    <div class="legend-item-x">
+                                        <div class="circle-x" style="width: 5px; height: 5px;"></div>
+                                        <span class="legend-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0</span>
+                                    </div>
+                                    <div class="legend-item-x">
+                                        <div class="circle-x" style="width: 15px; height: 15px;"></div>
+                                        <span class="legend-text">&nbsp;&nbsp;&nbsp;&nbsp;500</span>
+                                    </div>
+                                    <div class="legend-item-x">
+                                        <div class="circle-x" style="width: 25px; height: 25px;"></div>
+                                        <span class="legend-text">&nbsp;1,000</span>
+                                    </div>
+                                    <div class="legend-item-x">
+                                        <div class="circle-x" style="width: 35px; height: 35px;"></div>
+                                        <span class="legend-text">&nbsp;1,500</span>
+                                    </div>
+                                    <div class="legend-item-x">
+                                        <div class="circle-x" style="width: 45px; height: 45px;"></div>
+                                        <span class="legend-text">&nbsp;2,000</span>
+                                    </div>
+                                    <div class="legend-item-x">
+                                        <div class="circle-x" style="width: 55px; height: 55px;"></div>
+                                        <span class="legend-text">&nbsp;2,500</span>
+                                    </div>
+                                </div>
+                        
+                            </div>
+                            
+                            </div>
+                    </div>
+                        
+
+        <!-- Split container with title above both graph and text -->
+        <div class="split-container">
+            <h2 class="split-title">In-Depth Gender Breakdown Across Sectors</h2>
+            
+            <div class="content-container">
+
+             
+        <div class="chart-and-legend-container">
+            <div id="chart5" class="chart"></div>
+            <div class="legend-container-2">
+                <div class="legend-item">
+                    <div class="legend-color agriculture-color"></div>
+                    <span class="legend-text">Agriculture</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color mining-color"></div>
+                    <span class="legend-text">Mining and quarrying</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color manufacturing-color"></div>
+                    <span class="legend-text">Manufacturing</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color construction-color"></div>
+                    <span class="legend-text">Construction</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color services-color"></div>
+                    <span class="legend-text">Services</span>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="annotation" style="position: absolute; top: 150px; left: 450px;">
+            <div class="annotation-text">Male workforce dominates, but female participation is almost equal for Services</div>
+        </div>
+
+                <div class="text-container">
+                    
+                    <p>
+                        The chart shows gender distribution across sectors. In <b>Agriculture</b>, <i>males</i> slightly outnumber <i>females</i>, but the gap is smaller than in other sectors. <b>Mining and Quarrying</b> is heavily <i>male-dominated</i>, with minimal female presence. <b>Manufacturing</b> and <b>Construction</b> also have fewer females.
+
+                        The <b>Services sector</b> shows a more balanced gender ratio, though <i>males</i> still dominate.
+                    </p>
+                    <p>
+                        <i>Women</i> are more likely to be out of the workforce due to <i>"Family Duty"</i> and <i>"School"</i>, especially in <i>"Family Duty"</i>, where <i>females</i> outnumber <i>males</i>, indicating a potential barrier to participation.
+                    </p>
+                                    
+                </div>
+            </div>
+
+            <!-- <div class="legend-container-2">
+                <div class="legend-item">
+                    <div class="legend-color agriculture-color"></div>
+                    <span class="legend-text">Agriculture</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color mining-color"></div>
+                    <span class="legend-text">Mining and quarrying</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color manufacturing-color"></div>
+                    <span class="legend-text">Manufacturing</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color construction-color"></div>
+                    <span class="legend-text">Construction</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color services-color"></div>
+                    <span class="legend-text">Services</span>
+                </div>
+            </div> -->
+        
+
+  
+
+        </div>
+
+        <!-- Unemployment Section -->
+        <div class="section-heading">Unemployment</div>
+        <div class="split-container">
+            <h2 class="split-title">Work Experience of Unemployed Individuals by Age Group</h2>
+            <div class="content-container">
+                
+                
+                <div class="chart-and-legend-container">
+                    <div id="chart3" class="chart"></div>
+                </div>
+
+                <div class="text-container">
+                    <p>The visualization shows that among <i>younger individuals</i> (<b>15-24</b>), most unemployed have <b>never worked</b>. In <i>middle age groups</i> (<b>25-39</b>), the gap narrows, while in <i>older groups</i> (<b>40-64</b>), most have <b>worked before</b>, indicating younger individuals are more likely to have <b>never worked</b>. </p> <p>Now, let's explore the Proportion of Duration of Unemployment to see how long these individuals remain unemployed.</p>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        
+        <div class="split-container">
+            <h2 class="split-title">Proportion of Duration of Unemployment</h2>
+            <div class="content-container">
+                
+                
+                <div class="chart-and-legend-container-2">
+                    <div id="chart4" class="chart"></div>
+                    <div class="legend-container-3">
+                        <div class="legend-item">
+                            <div class="legend-color less-than-three-color"></div>
+                            <span class="legend-text">Less than 3 months</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color three-to-six-color"></div>
+                            <span class="legend-text">3 to 6 months</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color six-to-one-year-color"></div>
+                            <span class="legend-text">6 months to 1 year</span>
+                        </div>
+
+                        <div class="legend-item">
+                            <div class="legend-color more-than-one-year-color"></div>
+                            <span class="legend-text">More than 1 year</span>  
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-container">
+                    <p> The visualization highlights changes in unemployment duration in Malaysia from 2017 to 2023. The <b>less than 3 months</b> category rose sharply, reaching <b>68%</b> in <i>2023</i>, showing faster job placements. The <b>3 to 6 months</b> category dropped from <b>30%</b> to <i>18%</i> in <i>2023</i>, indicating shorter unemployment periods. The <b>6 months to 1 year</b> category remained stable at <i>9-14%</i>, with a slight dip to <i>9%</i> in 2023. </p> <p> Long-term unemployment, <b>over 1 year</b>, fell steadily to just <i>5%</i> in <i>2023</i>, suggesting better job market conditions. </p>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+
+        
+        <!-- Outside Labour Force Section -->
+        <div class="section-heading">Outside Labour Force</div>
+
+        <!-- Split container with title above both graph and text   Retirement remains consistently ranked third throughout the years-->
+ 
+
+
+    
+                <div class="chart-container">
+                    <h2>Reasons for Non-Participation in the Labour Force</h2>
+
+
+                    
+                    <div id="chart6" class="chart"></div>
+
+                    <div class="annotation" style="position: absolute; top: 265px; right: 10px;">
+                        <div class="annotation-text-2"><b>Retirement remains consistently ranked third throughout the years</b></div>
+                    </div>
+
+                        
+                
+                    <div class="four-section-layout">
+                        <div class="left-section">
+                            <!-- Blank section, no design element -->
+                            <div class="legend-container-x">
+                                <h2>Reason</h2>
+        
+
+                                <div class="legend-item-2">
+                                    <div class="legend-color disabled-color"></div>
+                                    <span class="legend-text">Disabled</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="legend-color family-duty-color"></div>
+                                    <span class="legend-text">Family Duty</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="legend-color further-study-color"></div>
+                                    <span class="legend-text">Further Study</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="legend-color no-interest-color"></div>
+                                    <span class="legend-text">No Interest</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="legend-color retired-color"></div>
+                                    <span class="legend-text">Retired</span>
+                                </div>
+                                <div class="legend-item-y">
+                                    <div class="legend-color school-color"></div>
+                                    <span class="legend-text">School</span>
+                                </div>
+                            </div>
+        
+        
+
+                        </div>
+                        
+                        <!-- Middle continuous section (two parts combined) -->
+                        <div class="middle-section">
+                            <p> The chart shows that from 2017 to 2023, <b>School</b> and <b>Family Responsibility</b> consistently led as reasons for non-participation, with Family Responsibility briefly overtaking School in 2020. <b>Retirement</b> remains steady in third place, while <b>Further Studies</b> and <b>Disabled</b> fluctuate. <b>Not Interested</b> ranks the lowest. Overall, non-participation is mainly driven by <i>education</i> and <i>family obligations</i>. </p> <p> Now, let's explore the Gender Distribution of Non-Participation in the Labour Force to see how these factors differ between men and women. </p>
+
+
+
+
+
+
+
+
+                        </div>
+                
+                        <div class="key-insights-section" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border-radius: 10px; background-color: #f8fafc;">
+                            <h2 style="color: #333; margin-bottom: 10px; font-family: 'Open Sans', sans-serif; font-size: 1.2rem; ">Key Insights 2023</h2>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <!-- First Insight -->
+                                <div class="insight" style="display: flex; align-items: center; justify-content: center;">
+                                    <img src="family.png" alt="Family Responsibility Icon" style="width: 40px; height: 40px; margin-right: 10px;">
+                                    <p style="font-family: 'Open Sans', sans-serif; font-size: 18px;"><b>1st</b> Family Duty</p>
+                                </div>
+                        
+                                <!-- Second Insight -->
+                                <div class="insight" style="display: flex; align-items: center; justify-content: center;">
+                                    <img src="school.png" alt="Study Icon" style="width: 40px; height: 40px; margin-right: 10px;">
+                                    <p style="font-family: 'Open Sans', sans-serif; font-size: 18px;"><b>2nd</b> Studies</p>
+                                </div>
+                        
+                                <!-- Third Insight -->
+                                <div class="insight" style="display: flex; align-items: center; justify-content: center;">
+                                    <img src="retire.png" alt="Retirement Icon" style="width: 40px; height: 40px; margin-right: 10px;">
+                                    <p style="font-family: 'Open Sans', sans-serif; font-size: 18px;"><b>3rd</b> Retirement</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                               
+                        
+
+                        </div>
+                </div>
+
+        <!-- Split container with title above both graph and text -->
+        
+        <div class="split-container">
+            <h2 class="split-title">Gender Distribution of Non-Participation in the Labour Force</h2>
+            <div class="content-container">
+                
+                
+                <div class="chart-and-legend-container-3">
+                    <div id="chart7" class="chart-5"></div>
+
+                        <!-- Annotation -->
+    <div class="annotation" style="position: absolute; top: 400px; left: 450px;">
+        <div class="annotation-text"><b>Most females</b> aren't in the labor force due to family duties</div>
+    </div>
+    <div class="annotation" style="position: absolute; top: 300px; left: 50x;">
+        <div class="annotation-text"><b>Equal numbers</b> of males and females are still studying</div>
+    </div>
+
+    
+
+                    <div class="legend-container-4">
+                        <div class="legend-item-2">
+                            <div class="legend-color disabled-color"></div>
+                            <span class="legend-text">Disabled</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color family-duty-color"></div>
+                            <span class="legend-text">Family Duty</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color further-study-color"></div>
+                            <span class="legend-text">Further Study</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color no-interest-color"></div>
+                            <span class="legend-text">No Interest</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color retired-color"></div>
+                            <span class="legend-text">Retired</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color school-color"></div>
+                            <span class="legend-text">School</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color disabled-male-color"></div>
+                            <span class="legend-text">Disabled-Male</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color disabled-female-color"></div>
+                            <span class="legend-text">Disabled-Female</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color family-duty-male-color"></div>
+                            <span class="legend-text">Family Duty-Male</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color family-duty-female-color"></div>
+                            <span class="legend-text">Family Duty-Female</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color further-study-male-color"></div>
+                            <span class="legend-text">Further Study-Male</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color further-study-female-color"></div>
+                            <span class="legend-text">Further Study-Female</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color no-interest-male-color"></div>
+                            <span class="legend-text">No Interest-Male</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color no-interest-female-color"></div>
+                            <span class="legend-text">No Interest-Female</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color retired-male-color"></div>
+                            <span class="legend-text">Retired-Male</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color retired-female-color"></div>
+                            <span class="legend-text">Retired-Female</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color school-male-color"></div>
+                            <span class="legend-text">School-Male</span>
+                        </div>
+                        <div class="legend-item-2">
+                            <div class="legend-color school-female-color"></div>
+                            <span class="legend-text">School-Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-container">
+                    <p>
+                        The chart shows the <b>gender distribution</b> of non-participation in the labor force, highlighting key trends. <b>Family Duty</b> significantly affects <i>females</i> with <b>2,984.8</b> compared to <b>85.2</b> for <i>males</i>. The <b>School</b> category has <b>1,298.7</b> <i>males</i> and <b>1,459.3</b> <i>females</i>, showing a slightly higher impact on <i>females</i>.
+                    </p>
+                    <p>
+                        <b>Retired</b> values are higher for <i>males</i> at <b>498.2</b>, while <b>Disabled</b> shows <b>183.4</b> <i>males</i> and <b>70.1</b> <i>females</i>. In <b>Further Study</b>, <i>males</i> report <b>60.1</b> versus <b>54</b> for <i>females</i>, and <b>No Interest</b> has <b>62.8</b> <i>males</i> versus <b>15.4</b> <i>females</i>. The chart reveals clear <b>gender disparities</b> in non-participation, with <b>Family Duty</b> and <b>School</b> being major factors for <i>women</i>.
+                    </p>
+                    
+        
+                </div>
+            </div>
+
+
+        </div>
+        
+        
+        <footer style="background-color: #1d3557; color: #f1faee; padding: 20px; text-align: left; margin-top: 40px;">
+            <p style="color: white;">Prepared by Sarviin Hari (32885741)</p>
+            <p style="color: white;">Last updated: 16th October 2024</p>
+                        <p style="margin: 0;color: white; ">Data sourced from:</p>
+
+                        <ul style="font-size: 16px;">
+                            <li>                <a href="https://open.dosm.gov.my/publications/productivity_2023-q4" target="_blank" style="color: #f1faee; text-decoration: underline; font-size: 16px;">[4Q 2023] Labour Productivity</a> <b>(Authored by Department of Statistics Malaysia, last updated 2023, accessed on 7th October 2024)</b>
+                </li>
+                <li>                <a href="https://open.dosm.gov.my/publications/labour_month_2023-12" target="_blank" style="color: #f1faee; text-decoration: underline; font-size: 16px;">[Dec 2023] Labour Force</a> <b>(Authored by Department of Statistics Malaysia, last updated 2023, accessed on 5th October 2024)</b>
+                </li>
+                <li>                <a href="https://open.dosm.gov.my/publications/labour_qtr_2023-q4" target="_blank" style="color: #f1faee; text-decoration: underline; font-size: 16px;">[4Q 2023] Labour Force</a> <b>(Authored by Department of Statistics Malaysia, last updated 2023, accessed on 3rd October 2024)</b>
+                </li>
+            </ul>
+            
+        </footer>
+
+
+    </div>
+
+    <script>
+        vegaEmbed('#chart1', './To_Submit_Map.json', { "actions": false }).then(function(result) {}).catch(console.error);
+        vegaEmbed('#chart2', './To_Submit_Bubble.json', { "actions": false }).then(function(result) {}).catch(console.error);
+        vegaEmbed('#chart3', './To_Submit_Sankey.json', { "actions": false }).then(function(result) {}).catch(console.error);
+        vegaEmbed('#chart4', './To_Submit_Waffle.json', { "actions": false }).then(function(result) {}).catch(console.error);
+        vegaEmbed('#chart5', './To_Submit_Mosaic.json', { "actions": false }).then(function(result) {}).catch(console.error);
+        vegaEmbed('#chart6', './To_Submit_Bump.json', { "actions": false }).then(function(result) {}).catch(console.error);
+        vegaEmbed('#chart7', './To_Submit_Sunburst.json', { "actions": false }).then(function(result) {}).catch(console.error);
+
+    </script>
+
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,131 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "A layered donut chart with embedded data.",
+    "width": 400,
+    "height": 400,
+    "data": {
+      "values": [
+        {"category": 1, "value": 4},
+        {"category": 2, "value": 6},
+        {"category": 3, "value": 10},
+        {"category": 4, "value": 3},
+        {"category": 5, "value": 7},
+        {"category": 6, "value": 8}
+      ]
+    },
+    "layer": [
+      {
+        "data": {
+            "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/sunb2.csv"
+          },
+          "transform": [
+            {
+              "aggregate": [
+                {"op": "sum", "field": "Value", "as": "TotalValue"}
+              ],
+              "groupby": ["Reason"]
+            }
+          ],
+        "mark": {
+          "type": "arc",
+          "innerRadius": 40,
+          "stroke": "black",
+          "strokeWidth": 2
+        },
+        "encoding": {
+          "theta": {
+            "field": "TotalValue",
+            "type": "quantitative"
+          },
+        "color": {
+          "field": "Reason",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Disabled", "Family Duty", "Further Study", "No Interest", "Retired", "School"],
+            "range": ["#33A2D8", "#61AF17", "#924444", "#fd8b17", "#7B4596", "#B3A431",               
+            "#74B7D8", "#a6cee3", 
+            "#9BE05D", "#b2df8a",
+            "#a94c4c", "#c17171",
+            "#ffa242", "#ffc367",
+            "#A97DBF", "#cab2d6",
+            "#E4D359", "#E8DC86" ]
+          },
+          "legend": null
+        },
+          "tooltip": [
+            {"field": "Reason", "type": "nominal", "title": "Reason"},
+            {"field": "TotalValue", "type": "quantitative", "title": "Total Value"}
+          ]
+        }
+
+            },
+      {
+        "data": {
+          "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/sunb2.csv"
+        },
+        "mark": {"type": "arc", "innerRadius": 100,        "stroke": "black",
+        "strokeWidth": 2    },        "encoding": {
+          "theta": {"field": "Value", "type": "quantitative"},
+          "color": {
+            "field": "By Gender",
+            "type": "nominal",
+            "scale": {
+              "domain": [
+                "Disabled-Male", "Disabled-Female", 
+                "Family Duty-Male", "Family Duty-Female",
+                "Further Study-Male", "Further Study-Female",
+                "No Interest-Male", "No Interest-Female",
+                "Retired-Male", "Retired-Female",
+                "School-Male", "School-Female"
+              ],
+              "range": [
+                "#74B7D8", "#a6cee3", 
+                "#9BE05D", "#b2df8a",
+                "#DCA17E", "#D07F52",
+                "#E8A03D", "#F1BD77",
+                "#A97DBF", "#cab2d6",
+                "#E4D359", "#E8DC86"   
+              ]
+            },
+                    "legend": null
+          },
+            "order": {"field": "Order", "type": "quantitative"},
+          "tooltip": [
+            {"field": "By Gender", "type": "nominal", "title": "Reason by Gender"},
+            {"field": "Reason", "type": "nominal", "title": "Reason"},
+            {"field": "Gender", "type": "nominal", "title": "Gender"},
+            {"field": "Value", "type": "quantitative", "title": "Value"}
+          ]
+        }
+
+
+      },
+  
+    {
+      "mark": {
+        "type": "text",
+        "radius": 150,
+        "fontSize": 15,
+        "align": "center",
+        "color": "black"
+      },
+      "encoding": {
+        "text": {"field": "Reason", "type": "nominal"},
+        "theta": {"field": "TotalValue", "type": "quantitative"}
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "radius": 190,
+        "fontSize": 12,
+        "align": "center"
+      },
+      "encoding": {
+        "text": {"field": "By Gender", "type": "nominal"},
+        "theta": {"field": "Value", "type": "quantitative"}
+      }
+    }
+    ]
+  }
+  

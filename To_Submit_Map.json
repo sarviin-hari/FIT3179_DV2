@@ -1,0 +1,182 @@
+  {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "width": "container",
+    "height": 480,
+    "projection": {
+      "type": "mercator"
+    },
+    "params": [
+      {
+        "name": "Year_selection",
+        "value": 2023,
+        "bind": {
+          "input": "range",
+          "min": 2019,
+          "max": 2023,
+          "step": 1,
+          "name": "Year: "
+        }
+      }
+    ],
+    "layer": [
+      {
+        "data": {
+          "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/state.csv"
+        },
+        "transform": [
+          {
+            "lookup": "state",
+            "from": {
+              "data": {
+                "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_HomeworkW10/refs/heads/main/malaysia.topojson",
+                "format": {
+                  "type": "topojson",
+                  "feature": "states"
+                }
+              },
+              "key": "properties.Name"
+            },
+            "as": "geo"
+          },
+          {"filter": "datum.year == Year_selection"}
+        ],
+        "mark": {"type": "geoshape", "stroke": "#fff"},
+        "encoding": {
+          "shape": {"field": "geo", "type": "geojson"},
+          "color": {
+            "field": "working_age_population_ratio",
+            "type": "quantitative",
+            "title": ["Percentage (%)"],
+            "scale": {
+              "type": "threshold",
+              "domain": [10, 20, 30, 40, 50, 60, 70, 80],
+              "range": ["#f9fbff", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#4292c6", "#2171b5", "#08519c"]
+            },
+            "legend": null
+          },
+  
+  "opacity": {
+    "condition": {
+      "test": "datum.state == clicked_state.state || clicked_state.state == null",
+      "value": 1
+    },
+    "value": 0.3
+  },
+          
+          "tooltip": [
+            {"field": "state", "type": "nominal", "title": "State"},
+            {
+              "field": "working_age_population_ratio",
+              "type": "quantitative",
+              "title": "Percentage of Working Population to Total Population(%)",
+              "format": ".2f"
+            },
+            {"field": "year", "type": "quantitative", "title": "Year"}
+          ]
+        },
+        "params": [
+          {
+            "name": "clicked_state",  
+            "select": {
+              "type": "point",
+              "fields": ["state"], 
+              "on": "click",
+              "clear": "mouseup"
+            }
+          }
+        ]
+      },
+      {
+        "data": {
+          "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/stately_data.csv"
+        },
+        "transform": [
+          {"filter": "datum.year == Year_selection"},
+          {
+            "filter": "isDefined(clicked_state.state) ? datum.state == clicked_state.state : datum.state == 'All States'"
+          }  ,
+          {
+            "calculate": "106.7638", 
+            "as": "longitude"
+          },
+          {
+            "calculate": "5.14444", 
+            "as": "latitude"
+          },
+          {
+            "calculate": "datum.category === 'lf_employed' ? 'Employed' : datum.category === 'lf_outside' ? 'Outside Labour' : datum.category === 'lf_unemployed' ? 'Unemployed' : datum.category",
+            "as": "category_label"
+          }
+  
+        ],
+        "layer" :[
+
+          {
+            "mark": {"type": "arc", "innerRadius": 20, "outerRadius": 110},
+        
+            "encoding": {
+              "longitude": {"field": "longitude", "type": "quantitative"},
+              "latitude": {"field": "latitude", "type": "quantitative"},  
+      
+              "theta": {"field": "value", "type": "quantitative"},
+              "color": {
+                "field": "category",
+                "type": "nominal",
+                "scale": {
+                  "domain": ["lf_employed", "lf_outside", "lf_unemployed"],
+                  "range": ["#002e37", "#004b5a", "#007a92"]
+                },
+                "legend": null
+              },
+              "tooltip": [
+                {"field": "category_label", "type": "nominal", "title": "Working Class Category"},
+                {"field": "value", "type": "quantitative","title": "Number of People"},
+                {"field": "state", "type": "nominal", "title": "State"},
+                {"field": "year", "type": "quantitative", "title": "Year"}
+              ]
+            }
+    
+          },
+          
+          
+      {
+
+        "mark": {
+          "type": "text",
+          "align": "center",
+          "fontSize": 25,
+          "fontWeight": "bold",
+          
+          "fill": "white", "stroke": "white", "strokeWidth": 5    },
+        "encoding": {
+          "longitude": {"field": "longitude", "type": "quantitative"},
+          "latitude": {"field": "latitude", "type": "quantitative"},
+          "text": {"field": "state", "type": "nominal", "title": "Selected State"}
+        }
+      },
+                
+      {
+
+        "mark": {
+          "type": "text",
+          "align": "center",
+          "fontSize": 25,
+          "fontWeight": "bold",
+          "color": "#000"
+        },
+        "encoding": {
+          "longitude": {"field": "longitude", "type": "quantitative"},
+          "latitude": {"field": "latitude", "type": "quantitative"},
+          "text": {"field": "state", "type": "nominal", "title": "Selected State"}
+        }
+      }
+
+        
+          
+
+        ]
+      }
+              
+    ]
+  }
+  

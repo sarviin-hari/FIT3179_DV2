@@ -1,0 +1,120 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "height": 500,
+  "width": 1300,
+  "description": "Animated multiple lines rank chart",
+  "data": {
+    "url": "https://raw.githubusercontent.com/sarviin-hari/FIT3179_Assignment_2/refs/heads/main/out_labour.csv"
+  },
+
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "point": {
+          "filled": true,
+          "size": 300
+        },
+        "strokeWidth": 6
+      },
+      "encoding": {
+        "x": {
+          "field": "Year",
+          "type": "ordinal",
+          "title": "Year",
+          "axis": {
+            "labelFontSize": 20,
+            "titleFontSize": 21
+          }
+        },
+        "y": {
+          "field": "Rank",
+          "type": "nominal",
+          "title": "Rank",
+          "axis": {
+            "labelFontSize": 20,
+            "titleFontSize": 21
+          }
+        },
+        
+        "color": {
+          "field": "Reason",
+          "type": "nominal",
+          "title": "Reason",
+          "scale": {
+            "domain": ["Disabled", "Family Responsibility", "Further Studies", "Not Interested", "Retired", "School"],
+            "range": ["#33A2D8", "#61AF17", "#924444", "#fd8b17", "#7B4596", "#B3A431"]
+          },
+          "legend": null
+        },
+        "order": {
+          "field": "Year",
+          "type": "ordinal"
+        },
+        "tooltip": [
+          {"field": "Reason", "type": "nominal", "title": "Reason"},
+          {"field": "Rank", "type": "nominal", "title": "Rank"},
+          {"field": "Year", "type": "ordinal", "title": "Year"},
+          {"field": "Value", "type": "quantitative", "title": "Value"}
+        ]
+      }    
+    },
+    {
+      "mark": {
+        "type": "point",
+        "size": 300,
+        "point": {
+          "filled": true,
+          "size": 700
+        },
+        "strokeWidth": 6
+      },
+      "encoding": {
+        "x": {
+          "field": "Year",
+          "type": "ordinal",
+          "title": "Year",
+          "axis": {
+            "labelFontSize": 20,
+            "titleFontSize": 21
+          }
+        },
+        "y": {
+          "field": "Rank",
+          "type": "nominal",
+          "title": "Rank",
+          "axis": {
+            "labelFontSize": 20,
+            "titleFontSize": 21
+          }
+        },
+        "color": {
+          "field": "Reason",
+          "type": "nominal",
+          "title": "Reason",
+          "scale": {
+            "domain": ["Disabled", "Family Responsibility", "Further Studies", "Not Interested", "Retired", "School"],
+            "range": ["#33A2D8", "#61AF17", "#924444", "#fd8b17", "#7B4596", "#B3A431"]
+          },
+          "legend": null
+        },
+        "order": {
+          "field": "Year",
+          "type": "ordinal"
+        },
+        "tooltip": [
+          {"field": "Reason", "type": "nominal", "title": "Reason"},
+          {"field": "Rank", "type": "nominal", "title": "Rank"},
+          {"field": "Year", "type": "ordinal", "title": "Year"},
+          {"field": "Value", "type": "quantitative", "title": "Value"}
+        ]
+      }    
+    }
+  ],
+
+  "config": {
+    "view": {"continuousWidth": 400, "continuousHeight": 300},
+    "line": {"interpolate": "monotone"},
+    "autosize": {"type": "fit", "contains": "padding"}
+  }
+}
